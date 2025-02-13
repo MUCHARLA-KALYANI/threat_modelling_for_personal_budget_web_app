@@ -32,17 +32,11 @@ def register():
         hashed_password = generate_password_hash(password)  # Hash the password
         conn = sqlite3.connect('budget.db')
         c = conn.cursor()
-        # Check if username already exists
-        c.execute("SELECT * FROM users WHERE username=?", (username,))
-        if c.fetchone():
-            return "Username already exists!"
-        # Insert new user
         c.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, hashed_password))
         conn.commit()
         conn.close()
         return redirect('/login')
     return render_template('register.html')
-
 # Login page
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -51,7 +45,6 @@ def login():
         password = request.form['password']
         conn = sqlite3.connect('budget.db')
         c = conn.cursor()
-        # Fetch user from database
         c.execute("SELECT * FROM users WHERE username=?", (username,))
         user = c.fetchone()
         conn.close()
@@ -61,7 +54,6 @@ def login():
         else:
             return "Invalid credentials!"
     return render_template('login.html')
-
 # Add transaction
 @app.route('/add', methods=['POST'])
 def add_transaction():
